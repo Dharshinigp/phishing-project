@@ -23,7 +23,19 @@ def save_history(entry):
 
     with open(HISTORY_FILE, "w") as f:
         json.dump(data, f, indent=2)
+@app.route("/test")
+def test():
+    url = "http://example.com"
 
+    features = extract_features(url)
+    prediction = model.predict([features])[0]
+    prob = model.predict_proba([features])[0][1]
+
+    return {
+        "url": url,
+        "prediction": "Phishing" if prediction == 1 else "Safe",
+        "risk_score": round(prob * 100, 2)
+    }
 @app.route("/predict", methods=["POST"])
 def predict():
     url = request.json.get("url")
